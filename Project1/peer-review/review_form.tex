@@ -1,0 +1,46 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Peer review form}
+
+\begin{document}
+\maketitle
+
+%First sentence of reviewed report: 
+
+\subsection*{Overall assessment}
+\ \bigskip
+
+% Put one cross "X" in each row 
+
+\begin{center}
+  \begin{tabular}{|p{5cm}|c|c|c|} 
+     \hline
+     & weak & satisfactory & strong \\ \hline 
+     Contents {\footnotesize \begin{itemize} \item covering \item relevance \end{itemize}} & & & \\ \hline 
+     Presentation {\footnotesize \begin{itemize} \item guiding the reader \item flow of ideas \item type-setting and spelling \end{itemize}} & & & \\ \hline 
+     Evidence {\footnotesize \begin{itemize} \item credibility \item correctness \end{itemize}} & & & \\ \hline 
+     Overall effectiveness & & & \\ \hline 
+  \end{tabular}
+\end{center}
+
+\subsection*{Specific comments on contents}
+
+% Write your comments here
+
+\subsection*{Specific comments on presentation}
+
+% Write your comments here
+
+\subsection*{Specific comments on evidence}
+
+% Write your comments here
+
+\end{document}  
