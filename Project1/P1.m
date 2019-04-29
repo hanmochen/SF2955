@@ -39,7 +39,7 @@ l= animatedline('Color','r','LineWidth',1);
 minX = min(X(1,:));
 minY = min(X(4,:));
 maxX = max(X(1,:));
-maxY = max(X(1,:));
+maxY = max(X(4,:));
 axis([minX maxX minY maxY])
 for i=1:(m+1)
     addpoints(l,X(1,i),X(4,i))
