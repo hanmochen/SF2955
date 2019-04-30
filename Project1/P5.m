@@ -1,6 +1,6 @@
 %% Load Data
-load('HA1-data/RSSI-measurements.mat')
-load('HA1-data/stations.mat')
+load('stations.mat')
+load('RSSI-measurements-unknown-sigma.mat')
 
 %% Basic Settings
 
@@ -10,6 +10,10 @@ n = 501;
 dT = 0.5;
 alpha = 0.6;
 
+max_cN = -Inf; %produces negative infinity
+max_v = 0;
+track_vm = zeros(1,13);
+vm = 1;
 % Transition probability matrix
 P = 1/20*(15*diag(ones(1,5))+ones(5));
 
@@ -45,7 +49,7 @@ States = [[0;0] [3.5;0] [0;3.5] [0;-3.5] [-3.5;0]];
 mc = dtmc(P);
 simulate_Z = simulate(mc,n);
 
-%% Loop
+%% Main Loop
 for  k = 1:(n-1) 
     zM = repmat(pZ*States(:,simulate_Z(k)),1,N);
     wM = pW*(mvnrnd([0,0],diag([0.25,0.25]),N)');
@@ -53,8 +57,8 @@ for  k = 1:(n-1)
     YmN = repmat(Y(:,k+1),1,N);
     X = xM + zM + wM;
     w =  pdf(X,Y(:,k+1)',pos_vec);
-    %ind = randsample(N,N,true,w);
-    %X = X(:,ind);
+    ind = randsample(N,N,true,w);
+    X = X(:,ind);
     tau(1,k+1) = sum(X(1,:).*w')/sum(w);
     tau(2,k+1) = sum(X(4,:).*w')/sum(w);
     track(:,k+1) = w;
