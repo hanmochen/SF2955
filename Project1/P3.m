@@ -98,7 +98,7 @@ title('n=200')
 
 %% Plot efficient sample size
 figure,
-plot(1:n,track_sample)
+plot(1:n,smoothdata(track_sample,'gaussian',20))
 
 %% Calculate the observation PDF
 function p=pdf(x,y,pos_vec)
