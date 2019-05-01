@@ -85,13 +85,13 @@ end
 
 %n= 50
 figure,subplot(3,1,1),
-histogram(log(track(:,100)),20);
+histogram(log(track(:,50)),20);
 title('n=50')
 %n= 100
 subplot(3,1,2),
-histogram(log(track(:,150)),20);
+histogram(log(track(:,100)),20);
 title('n=100')
-%histogram when n= 150
+%n= 200
 subplot(3,1,3),
 histogram(log(track(:,200)),20);
 title('n=150')
