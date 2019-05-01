@@ -94,7 +94,7 @@ title('n=100')
 %n= 200
 subplot(3,1,3),
 histogram(log(track(:,200)),20);
-title('n=150')
+title('n=200')
 
 %% Plot efficient sample size
 figure,
