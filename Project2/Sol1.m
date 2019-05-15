@@ -7,8 +7,8 @@ T = csvread("HA2-data/coal-mine.csv");
 var_theta = 1;
 rho = 1;
 
-d = 3;%number of break points
-M = 10000;%steps
+d = 4;%number of break points
+M = 100000;%steps
 
 t = zeros(d+1,M);%t1,t2,...,t(d+1)
 t(1,:) = 1851;
@@ -55,7 +55,7 @@ figure(1);
 for i=2:d
     histogram(t(i,:));
     title("Histogram for t")
-    legend('t2','t3')
+    legend('t2','t3','t4')
     hold on;
     xlabel("t")
     ylabel("Frequency")
@@ -67,6 +67,7 @@ for i=1:d
     histogram(lambda(i,:),0:0.1:2);
     hold on;
     title("Histogram for $\lambda$ ",'Interpreter','latex')
+    legend('$\lambda_1$','$\lambda_2$','$\lambda_3$','$\lambda_4$','Interpreter','latex')
     xlabel("$\lambda$",'Interpreter','latex')
     ylabel("Frequency")        
 end
