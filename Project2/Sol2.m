@@ -20,11 +20,11 @@ for j = 1:N
     theta(j) = theta0;
 end
 
-%Plot points
+%% Plot Estimator
 figure
 plot(1:N,theta); 
 title('$\hat\theta$','Interpreter','latex')
 xlabel('Iteration times')
 ylabel('$\hat\theta$','Interpreter','latex')
 
-disp(["The estimated theta is",num2str(mean(theta(80:100)))])
+disp("The estimated theta is "+num2str(mean(theta(80:100))))
