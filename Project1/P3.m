@@ -1,4 +1,5 @@
 %% Load Data
+clc;clear all;close all;
 load('HA1-data/RSSI-measurements.mat')
 load('HA1-data/stations.mat')
 
@@ -33,36 +34,40 @@ pW = [phiW zeros(3,1);...
 
 %% Initialization
 tau = zeros(2,n); 
-track = zeros(N,n);
+w = zeros(N,n);
 
 X = mvnrnd(zeros(6,1),diag([500,5,5,200,5,5]),N)';
-w = pdf(X,Y(:,1)',pos_vec);
-tau(1,1) = sum(X(1,:).*w')/sum(w);
-tau(2,1) = sum(X(4,:).*w')/sum(w);
-track(:,1) = w;
+w0 = pdf(X,Y(:,1)',pos_vec);
+tau(1,1) = sum(X(1,:).*w0')/sum(w0);
+tau(2,1) = sum(X(4,:).*w0')/sum(w0);
+w(:,1) = w0;
 
 States = [[0;0] [3.5;0] [0;3.5] [0;-3.5] [-3.5;0]];
 mc = dtmc(P);
-simulate_Z = simulate(mc,n);
+Z=zeros(N,n);
+for i=1:N
+    Z(i,:) = simulate(mc,n-1);
+end
 
 %% Loop
 for  k = 1:(n-1) 
-    zM = repmat(pZ*States(:,simulate_Z(k)),1,N);
-    wM = pW*(mvnrnd([0,0],diag([0.25,0.25]),N)');
-    xM = pX* X; 
-    YmN = repmat(Y(:,k+1),1,N);
-    X = xM + zM + wM;
-    w =  pdf(X,Y(:,k+1)',pos_vec);
-    %ind = randsample(N,N,true,w);
-    %X = X(:,ind);
-    tau(1,k+1) = sum(X(1,:).*w')/sum(w);
-    tau(2,k+1) = sum(X(4,:).*w')/sum(w);
-    track(:,k+1) = w;
+    %Update X
+    X = pX* X + pZ*States(:,Z(:,k)) + pW*(mvnrnd([0,0],diag([0.25,0.25]),N)');
+    
+    %Update Weights
+    w0 =  w0.*pdf(X,Y(:,k+1)',pos_vec);
+    w0 = w0/sum(w0);
+    w(:,k+1) = w0;
+    
+    %Estimate tau
+    tau(1,k+1) = sum(X(1,:).*w0')/sum(w0);
+    tau(2,k+1) = sum(X(4,:).*w0')/sum(w0);
+
 end
 
 %% Draw Trajectory
 figure,
-plot(tau(1,:),tau(2,:),'LineWidth',2);
+plot(tau(1,:),tau(2,:),'.');
 hold on
 plot(pos_vec(1,:),pos_vec(2,:),'*','Color','r');
 title('Simulated Trajectory')
@@ -73,7 +78,7 @@ track_sample = zeros(1,n);
 sample_size = 0;
 dummy = Inf;
 for i = 1:n
-    CV2 = (1/N)*sum((N*(track(:,i)./sum(track(:,i)))-1).^2);
+    CV2 = (1/N)*sum((N*(w(:,i)./sum(w(:,i)))-1).^2);
     track_sample(i) = N/(1+CV2);
     if track_sample(i)<dummy
         dummy = track_sample(i);
@@ -85,20 +90,20 @@ end
 
 %n= 50
 figure,subplot(3,1,1),
-histogram(log(track(:,50)),20);
+histogram(log(w(:,50)),20);
 title('n=50')
 %n= 100
 subplot(3,1,2),
-histogram(log(track(:,100)),20);
+histogram(log(w(:,100)),20);
 title('n=100')
 %n= 200
 subplot(3,1,3),
-histogram(log(track(:,200)),20);
+histogram(log(w(:,200)),20);
 title('n=200')
 
 %% Plot efficient sample size
 figure,
-plot(1:n,smoothdata(track_sample,'gaussian',20))
+plot(track_sample)
 
 %% Calculate the observation PDF
 function p=pdf(x,y,pos_vec)

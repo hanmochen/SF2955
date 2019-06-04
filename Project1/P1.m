@@ -1,6 +1,5 @@
-m = 1000;%m steps
 %% Basic Settings 
-
+clc;clear all;close all;
 dT = 0.5;
 alpha = 0.6;
 X0 = (mvnrnd(zeros(6,1),diag([500,5,5,200,5,5])))';
@@ -31,13 +30,16 @@ pW = [phiW zeros(3,1);...
 
 %% Simulate a trajectory
 % Simulate Z
+
+N = 1000;%m steps
+
 mc = dtmc(P);
-Z = simulate(mc,m);%simulate Z from a random state for m steps
+Z = simulate(mc,N);%simulate Z from a random state for m steps
 
 % Simulate X
-X = zeros(6,m+1);
+X = zeros(6,N+1);
 X(:,1) = X0;
-for i=1:m
+for i=1:N
     X(:,i+1) = pX* X(:,i) + pZ*Z_state(:,Z(i)) + pW*(mvnrnd(zeros(2,1),diag([0.25,0.25])))';
 end
 
@@ -50,7 +52,10 @@ minY = min(X(4,:));
 maxX = max(X(1,:));
 maxY = max(X(4,:));
 axis([minX maxX minY maxY])
-for i=1:(m+1)
+for i=1:(N+1)
     addpoints(l,X(1,i),X(4,i))
     drawnow    
 end
+
+figure,
+plot(X(1,:), X(4,:))
